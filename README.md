@@ -23,13 +23,13 @@
 Here's how the cookie consent banner looks and works in different scenarios:
 
 ### Default Light Theme
-![Light Theme](assets/demo-light.png)
+![Light Theme](assets/demo-light.svg)
 
 ### Dark Theme
-![Dark Theme](assets/demo-dark.png)
+![Dark Theme](assets/demo-dark.svg)
 
 ### Mobile View
-![Mobile View](assets/demo-mobile.png)
+![Mobile View](assets/demo-mobile.svg)
 
 ### Customization Example
 ```javascript
@@ -44,7 +44,7 @@ Here's how the cookie consent banner looks and works in different scenarios:
   "animation": "slide-up"
 }
 ```
-![Custom Theme](assets/demo-custom.png)
+![Custom Theme](assets/demo-custom.svg)
 
 ## ✨ Features
 
@@ -141,7 +141,7 @@ CookieConsent.init({
 
 ## 📚 Documentation
 
-For detailed documentation, visit our [Documentation Portal](https://docs.fidiora.com/lightweight-cookie-consent).
+For detailed documentation, visit our [Documentation Portal](https://consent.fidiora.com/docs).
 
 ## 🤝 Contributing
 
