@@ -71,6 +71,31 @@ Here's how the cookie consent banner looks and works in different scenarios:
   - TypeScript support
   - Easy integration
 
+## 🔧 Architecture
+
+### Framework: 
+Express.js (Node.js) with modern ES modules
+
+### Security Features:
+- Comprehensive CSP (Content Security Policy) implementation
+- CSRF protection using csurf
+- Rate limiting with IP-based throttling
+- Helmet for security headers
+- CORS with configurable origins
+- Cookie security with httpOnly, secure, and sameSite flags
+- Performance Optimizations:
+
+### Compression middleware for response compression
+- Static file caching with ETag support
+- Asset versioning and caching
+- SRI (Subresource Integrity) for assets
+
+### Key Features:
+- Banner generation API with input validation
+- Asset serving (CSS/JS) with versioning
+- Health check endpoint
+- Error handling middleware
+
 ## 🔧 Installation
 
 1. Clone the repository:
