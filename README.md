@@ -1,57 +1,18 @@
-<div align="center">
-  <a href="https://fidiora.com">
-    <img src="https://fidiora.com/assets/logo.png" alt="Fidiora Logo" width="200">
-  </a>
+# Lightweight Cookie Consent Banner
 
-  <h1>Lightweight Cookie Consent</h1>
-  <p>A lightweight, robust, and customizable cookie consent solution that helps websites comply with privacy regulations like GDPR and CCPA.</p>
-  <p>
-    <a href="https://fidiora.com">
-      <img src="https://img.shields.io/badge/powered%20by-Fidiora-blue.svg" alt="Powered by Fidiora">
-    </a>
-    <a href="https://github.com/Fidiora/lightweight-cookie-consent/blob/main/LICENSE">
-      <img src="https://img.shields.io/badge/license-MIT-green.svg" alt="License">
-    </a>
-    <a href="https://github.com/Fidiora/lightweight-cookie-consent/issues">
-      <img src="https://img.shields.io/github/issues/Fidiora/lightweight-cookie-consent.svg" alt="Issues">
-    </a>
-  </p>
-</div>
+A lightweight, robust, and customizable cookie consent solution that helps websites comply with privacy regulations like GDPR and CCPA.
 
-## 🚀 Demo
+[![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
+[![Node.js CI](https://github.com/your-username/lightweight-cookie-consent/workflows/Node.js%20CI/badge.svg)](https://github.com/your-username/lightweight-cookie-consent/actions)
 
-Here's how the cookie consent banner looks and works in different scenarios:
-
-### Default Light Theme
-![Light Theme](assets/demo-light.svg)
-
-### Dark Theme
-![Dark Theme](assets/demo-dark.svg)
-
-### Mobile View
-![Mobile View](assets/demo-mobile.svg)
-
-### Customization Example
-```javascript
-{
-  "theme": "custom",
-  "colors": {
-    "primary": "#0066cc",
-    "background": "#ffffff",
-    "text": "#333333"
-  },
-  "position": "bottom-right",
-  "animation": "slide-up"
-}
-```
-![Custom Theme](assets/demo-custom.svg)
-
-## ✨ Features
+## 🚀 Features
 
 - 🔒 **GDPR and CCPA Compliant**
-  - Customizable consent categories
-  - Detailed audit logs
+  - Granular consent categories
+  - Audit-ready logging
   - Privacy-first approach
+  - Documented data handling
 
 - 🎨 **Highly Customizable**
   - Multiple themes (Light/Dark)
@@ -63,132 +24,176 @@ Here's how the cookie consent banner looks and works in different scenarios:
   - < 5KB gzipped
   - No external dependencies
   - Async loading
-  - High performance
+  - High performance with caching
 
 - 🛠️ **Developer Friendly**
-  - Simple API
-  - Extensive documentation
+  - RESTful API
   - TypeScript support
+  - Comprehensive documentation
   - Easy integration
 
-## 🔧 Architecture
+## 🔧 Quick Start
 
-### Framework: 
-Express.js (Node.js) with modern ES modules
-
-### Security Features:
-- Comprehensive CSP (Content Security Policy) implementation
-- CSRF protection using csurf
-- Rate limiting with IP-based throttling
-- Helmet for security headers
-- CORS with configurable origins
-- Cookie security with httpOnly, secure, and sameSite flags
-- Performance Optimizations:
-
-### Compression middleware for response compression
-- Static file caching with ETag support
-- Asset versioning and caching
-- SRI (Subresource Integrity) for assets
-
-### Key Features:
-- Banner generation API with input validation
-- Asset serving (CSS/JS) with versioning
-- Health check endpoint
-- Error handling middleware
-
-## 🔧 Installation
-
-1. Clone the repository:
+1. Install via npm:
 ```bash
-git clone https://github.com/Fidiora/lightweight-cookie-consent.git
-cd lightweight-cookie-consent
+npm install lightweight-cookie-consent
 ```
 
-2. Install dependencies:
-```bash
-npm install
-```
-
-3. Create a `.env` file:
+2. Create a `.env` file:
 ```env
 PORT=3001
 NODE_ENV=development
-CORS_ORIGIN=http://localhost:3000
-SESSION_SECRET=your-session-secret
+COOKIE_SECRET=your-secret-key
+ALLOWED_ORIGINS=http://localhost:3000,http://localhost:5173
 ```
 
-4. Start the development server:
+3. Start the server:
 ```bash
-npm run dev
+npm run start
 ```
 
-## 📖 Usage
+## 📖 API Documentation
 
-### Basic Implementation
-```html
-<script src="https://cdn.fidiora.com/cookie-consent/v1.0/cookie-consent.min.js"></script>
-<script>
-  CookieConsent.init({
-    privacyPolicy: '/privacy',
-    theme: 'light',
-    position: 'bottom'
-  });
-</script>
+### Endpoints
+
+#### GET /api/health
+Health check endpoint to verify server status.
+
+**Response:**
+```json
+{
+  "status": "healthy"
+}
 ```
 
-### Advanced Configuration
-```javascript
-CookieConsent.init({
-  privacyPolicy: '/privacy',
-  theme: 'custom',
-  position: 'bottom-right',
-  colors: {
-    primary: '#0066cc',
-    background: '#ffffff',
-    text: '#333333'
-  },
-  categories: {
-    necessary: {
-      name: 'Essential',
-      required: true
+#### GET /api/csrf-token
+Get CSRF token for subsequent requests.
+
+**Response:**
+```json
+{
+  "csrfToken": "token-here"
+}
+```
+
+#### POST /api/generate
+Generate banner installation code.
+
+**Request Body:**
+```json
+{
+  "storageType": "localStorage",
+  "cookieDuration": 365,
+  "consentName": "myCookieConsent",
+  "text": "We use cookies to improve your experience",
+  "categories": {
+    "necessary": {
+      "name": "Essential",
+      "required": true
     },
-    analytics: {
-      name: 'Analytics',
-      description: 'Help us improve our website'
-    },
-    marketing: {
-      name: 'Marketing',
-      description: 'Personalized content'
+    "analytics": {
+      "name": "Analytics",
+      "required": false
     }
   }
-});
+}
 ```
 
-## 📚 Documentation
+**Response:**
+```json
+{
+  "success": true,
+  "installationCode": "<!-- Generated installation code -->",
+  "version": "timestamp"
+}
+```
 
-For detailed documentation, visit our [Documentation Portal](https://consent.fidiora.com/docs).
+## 🔒 Security Features
+
+- **CSP (Content Security Policy)**: Strict CSP headers
+- **CSRF Protection**: Token-based CSRF prevention
+- **Rate Limiting**: IP-based request throttling
+- **Security Headers**: Using Helmet.js
+- **CORS**: Configurable origin restrictions
+- **Cookie Security**: HTTP-only, secure flags
+- **SRI**: Subresource Integrity for assets
+
+## ⚡ Performance
+
+- Gzip compression
+- Static asset caching with ETags
+- In-memory caching for banner assets
+- Cache-Control headers
+- Asset versioning
+- Async operations
+
+### Scaling Recommendations
+
+1. **Load Balancing**
+   - Use multiple instances behind a load balancer
+   - Enable sticky sessions if needed
+
+2. **Caching**
+   - Implement Redis for distributed caching
+   - Use CDN for static assets
+
+3. **Rate Limiting**
+   - Adjust rate limits based on traffic
+   - Use Redis for distributed rate limiting
+
+## 🧪 Testing
+
+Run the test suite:
+```bash
+npm test
+```
+
+Run with coverage:
+```bash
+npm run test:coverage
+```
 
 ## 🤝 Contributing
 
-We welcome contributions! Please read our [Contributing Guidelines](CONTRIBUTING.md) for details.
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/amazing-feature`)
+3. Run tests (`npm test`)
+4. Commit changes (`git commit -m 'Add amazing feature'`)
+5. Push to branch (`git push origin feature/amazing-feature`)
+6. Open a Pull Request
 
-## 🔒 Security
+### Code Quality Standards
 
-Security is our top priority. Read our [Security Policy](SECURITY.md) for reporting vulnerabilities.
-
-## 💬 Support
-
-For support:
-- Visit [fidiora.com](https://fidiora.com)
-- Join our [Community](https://fidiora.com/community)
-- Open an [Issue](https://github.com/Fidiora/lightweight-cookie-consent/issues)
+- Write unit tests for new features
+- Maintain >90% test coverage
+- Follow ESLint rules
+- Add JSDoc comments
+- Update TypeScript types
+- Follow semantic versioning
 
 ## 📄 License
 
-MIT © [Fidiora](https://fidiora.com) - See [LICENSE](LICENSE)
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
----
+## 🔍 Technical Details
 
-<div align="center">
-  <sub>Built with ❤️ by the <a href="https://fidiora.com">Fidiora</a> community.</sub>
-</div>
+### System Requirements
+- Node.js ≥ 16
+- NPM ≥ 7
+
+### Environment Variables
+| Variable | Description | Default |
+|----------|-------------|---------|
+| PORT | Server port | 3001 |
+| NODE_ENV | Environment | development |
+| COOKIE_SECRET | Cookie encryption key | Required |
+| ALLOWED_ORIGINS | CORS origins | http://localhost:3000 |
+
+### Error Handling
+All errors follow this format:
+```json
+{
+  "error": "Error type",
+  "details": "Detailed message",
+  "code": "ERROR_CODE"
+}
