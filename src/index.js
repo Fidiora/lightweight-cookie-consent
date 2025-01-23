@@ -39,8 +39,16 @@ app.use(cors(corsOptions));
 app.use(express.json({ limit: '10kb' }));
 app.use(cookieParser(process.env.COOKIE_SECRET || 'your-secret-key'));
 
-// Serve static banner assets
-app.use('/banner', express.static(join(__dirname, 'assets', 'banner')));
+// Serve static banner assets with correct MIME types
+app.use('/banner', express.static(join(__dirname, 'assets', 'banner'), {
+  setHeaders: (res, path) => {
+    if (path.endsWith('.js')) {
+      res.setHeader('Content-Type', 'application/javascript');
+    } else if (path.endsWith('.css')) {
+      res.setHeader('Content-Type', 'text/css');
+    }
+  }
+}));
 
 // Security: Comprehensive CSP and security headers
 app.use(helmet({
