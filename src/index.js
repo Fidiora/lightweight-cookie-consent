@@ -27,10 +27,11 @@ const port = process.env.PORT || 3001;
 
 // Configure CORS
 const corsOptions = {
-  origin: ['http://localhost:3000', 'http://localhost:5173', 'http://localhost:5174', 'http://127.0.0.1:5174'],
+  origin: ['http://localhost:3000', 'http://localhost:5173', 'http://localhost:5174', 'http://localhost:5175', 'http://localhost:5176', 'http://127.0.0.1:5176'],
   credentials: true,
-  methods: ['GET', 'POST', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'x-csrf-token'],
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-CSRF-Token'],
+  exposedHeaders: ['X-CSRF-Token'],
   maxAge: 600 // Cache preflight requests for 10 minutes
 };
 
@@ -86,12 +87,40 @@ const limiter = rateLimit({
 
 app.use('/api', limiter);
 
-// CSRF protection setup
-const csrfProtection = csrf({
+// CSRF protection
+app.use(csrf({
   cookie: {
-    key: '_csrf',
-    signed: false // Don't sign the cookie to make it easier to read by the client
+    httpOnly: true,
+    sameSite: 'lax',
+    secure: process.env.NODE_ENV === 'production'
+  },
+  ignoreMethods: ['GET', 'HEAD', 'OPTIONS']
+}));
+
+// CSRF token endpoint
+app.get('/api/csrf-token', (req, res) => {
+  const token = req.csrfToken();
+  res.cookie('XSRF-TOKEN', token, {
+    httpOnly: false,
+    sameSite: 'lax',
+    secure: process.env.NODE_ENV === 'production'
+  });
+  res.json({ token });
+});
+
+// Error handler for CSRF
+app.use((err, req, res, next) => {
+  if (err.code === 'EBADCSRFTOKEN') {
+    return res.status(403).json({
+      error: 'Invalid CSRF token',
+      message: 'Please refresh the page and try again',
+      debug: process.env.NODE_ENV === 'development' ? {
+        token: req.headers['x-csrf-token'],
+        cookies: req.cookies
+      } : undefined
+    });
   }
+  next(err);
 });
 
 // Validation middleware
@@ -141,14 +170,8 @@ app.get('/api/health', (req, res) => {
   res.json({ status: 'healthy' });
 });
 
-// CSRF token endpoint
-app.get('/api/csrf-token', csrfProtection, (req, res) => {
-  const token = req.csrfToken();
-  res.json({ csrfToken: token });
-});
-
 // Generate banner code endpoint
-app.post('/api/generate', csrfProtection, validateBannerConfig, async (req, res) => {
+app.post('/api/generate', validateBannerConfig, async (req, res) => {
   try {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
